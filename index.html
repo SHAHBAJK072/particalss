@@ -1,0 +1,825 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Effect on Image</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+
+        // Load the image
+        const image = new Image();
+        image.src = "./my-img.png";
+        image.crossOrigin = "anonymous";
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 2;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 20 + 1;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update(mouse) {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = 100;
+                const force = (maxDistance - distance) / maxDistance;
+
+                if (distance < maxDistance) {
+                    this.x -= (dx / distance) * force * this.density;
+                    this.y -= (dy / distance) * force * this.density;
+                } else {
+                    if (this.x !== this.baseX) {
+                        const dx = this.x - this.baseX;
+                        this.x -= dx / 10;
+                    }
+                    if (this.y !== this.baseY) {
+                        const dy = this.y - this.baseY;
+                        this.y -= dy / 10;
+                    }
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 4) {
+                for (let x = 0; x < image.width; x += 4) {
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update(mouse);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        const mouse = {
+            x: null,
+            y: null,
+        };
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+
+            initParticles(imageData);
+            animate();
+        };
+    </script>
+</body>
+</html> -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Effect on Image</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+
+        // Load the image
+        const image = new Image();
+        image.src = "./my-img.png";
+        image.crossOrigin = "anonymous";
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 1; // Reduced size for finer particles
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 20 + 1;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update(mouse) {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const maxDistance = 100;
+                const force = (maxDistance - distance) / maxDistance;
+
+                if (distance < maxDistance) {
+                    this.x -= (dx / distance) * force * this.density;
+                    this.y -= (dy / distance) * force * this.density;
+                } else {
+                    if (this.x !== this.baseX) {
+                        const dx = this.x - this.baseX;
+                        this.x -= dx / 10;
+                    }
+                    if (this.y !== this.baseY) {
+                        const dy = this.y - this.baseY;
+                        this.y -= dy / 10;
+                    }
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 2) { // Reduced step for more particles
+                for (let x = 0; x < image.width; x += 2) { // Reduced step for more particles
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update(mouse);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        const mouse = {
+            x: null,
+            y: null,
+        };
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+
+            initParticles(imageData);
+            animate();
+        };
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Particle Effect on Image</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+
+        const image = new Image();
+        image.src = "./my-img.png";
+        image.crossOrigin = "anonymous";
+
+        const mouse = { x: null, y: null, radius: 100 };
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 20 + 1;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const directionX = dx / distance;
+                    const directionY = dy / distance;
+
+                    this.x -= directionX * force * this.density;
+                    this.y -= directionY * force * this.density;
+                } else {
+                    this.x += (this.baseX - this.x) * 0.1; // Smooth return to base
+                    this.y += (this.baseY - this.y) * 0.1;
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 3) { // Reduced step for finer particles
+                for (let x = 0; x < image.width; x += 3) {
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+            initParticles(imageData);
+            animate();
+        };
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            image.onload();
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Particle Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+        const image = new Image();
+        image.src = "./my-img.png"; // Replace with your image file name
+        image.crossOrigin = "anonymous";
+
+        const mouse = { x: null, y: null, radius: 150 };
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 1.5; // Adjust size for visibility
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 30 + 1; // Randomized movement
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                const forceDirectionX = dx / distance || 0;
+                const forceDirectionY = dy / distance || 0;
+
+                const maxDistance = mouse.radius;
+                const force = (maxDistance - distance) / maxDistance;
+
+                const directionX = forceDirectionX * force * this.density;
+                const directionY = forceDirectionY * force * this.density;
+
+                if (distance < maxDistance) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    // Smooth return to original position
+                    this.x += (this.baseX - this.x) * 0.05;
+                    this.y += (this.baseY - this.y) * 0.05;
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 2) {
+                for (let x = 0; x < image.width; x += 2) {
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+            initParticles(imageData);
+            animate();
+        };
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            image.onload();
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanced Particle Effect</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+        const image = new Image();
+        image.src = "./my-img.png"; // Replace with your image file name
+        image.crossOrigin = "anonymous";
+
+        const mouse = { x: null, y: null, radius: 150 };
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 1.2; // Adjusted size for finer particles
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 15 + 5; // Reduced density for balanced motion
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                const forceDirectionX = dx / distance || 0;
+                const forceDirectionY = dy / distance || 0;
+
+                const maxDistance = mouse.radius;
+                const force = (maxDistance - distance) / maxDistance;
+
+                const directionX = forceDirectionX * force * this.density;
+                const directionY = forceDirectionY * force * this.density;
+
+                if (distance < maxDistance) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    this.x += (this.baseX - this.x) * 0.08; // Slightly faster return
+                    this.y += (this.baseY - this.y) * 0.08;
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 2) { // Balance between detail and performance
+                for (let x = 0; x < image.width; x += 2) {
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+            initParticles(imageData);
+            animate();
+        };
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            image.onload();
+        });
+    </script>
+</body>
+</html> -->
+
+ye hi hain
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smooth Particle Interaction</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particleArray = [];
+        const image = new Image();
+        image.src = "./img/my-img.png"; // Replace with your image file name
+        image.crossOrigin = "anonymous";
+
+        const mouse = { x: null, y: null, radius: 100 }; // Increased radius for better detection
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x + canvas.width / 2 - image.width / 2;
+                this.y = y + canvas.height / 2 - image.height / 2;
+                this.size = 1.2;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = Math.random() * 15 + 5;
+                this.color = color;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                const forceDirectionX = dx / distance || 0;
+                const forceDirectionY = dy / distance || 0;
+
+                const maxDistance = mouse.radius;
+                const force = (maxDistance - distance) / maxDistance;
+
+                const directionX = forceDirectionX * force * this.density;
+                const directionY = forceDirectionY * force * this.density;
+
+                if (distance < maxDistance) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    this.x += (this.baseX - this.x) * 0.08;
+                    this.y += (this.baseY - this.y) * 0.08;
+                }
+            }
+        }
+
+        function initParticles(imageData) {
+            particleArray.length = 0;
+            const data = imageData.data;
+
+            for (let y = 0; y < image.height; y += 2) {
+                for (let x = 0; x < image.width; x += 2) {
+                    const index = (y * image.width + x) * 4;
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        const color = `rgb(${red},${green},${blue})`;
+                        particleArray.push(new Particle(x, y, color));
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particleArray.forEach((particle) => {
+                particle.draw();
+                particle.update();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        image.onload = () => {
+            ctx.drawImage(image, canvas.width / 2 - image.width / 2, canvas.height / 2 - image.height / 2);
+            const imageData = ctx.getImageData(
+                canvas.width / 2 - image.width / 2,
+                canvas.height / 2 - image.height / 2,
+                image.width,
+                image.height
+            );
+            initParticles(imageData);
+            animate();
+        };
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            image.onload();
+        });
+    </script>
+</body>
+</html>
+
+
+
+ye hi hain
